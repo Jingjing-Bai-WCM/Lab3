@@ -1,0 +1,76 @@
+---
+title: "Lab3"
+author: "J Bai"
+date: "9/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Load packages
+```{r}
+library(tidyverse)
+library(gapminder)
+```
+
+#### Problem 1
+```{r}
+x <- seq(-4,4, by=0.1)
+pdf <- dnorm(x)
+pdf_df <- data.frame(x, y = pdf)
+p = ggplot(pdf_df) +
+  geom_line(aes(x = x, y = y)) +
+  geom_ribbon(data = pdf_df[pdf_df$x < -1,], aes(x, ymax = y, ymin = 0), fill = "red", col = "black") +
+  labs(ylab = "Density", title = "Pr(X <= -1)") +
+  theme_classic()
+p
+```
+
+
+#### Problem 2
+```{r}
+gapminder %>%
+  filter(year == 2007) %>%
+  ggplot(aes(x= gdpPercap, y = lifeExp))+
+  geom_point() +
+  geom_text(aes(label = ifelse(gdpPercap>40000 & continent == "Europe",as.character(country),'')),
+            vjust = 2, col = "blue") +
+  labs(x = "GDP per capita", y = "life expectancy")
+```
+
+
+#### Problem 3
+```{r}
+top6 <- gapminder %>%
+  filter(year == 2007) %>%
+  arrange(desc(gdpPercap)) %>%
+  head(6)
+
+x_min <- as.integer(min(top6$gdpPercap) * 0.98)
+x_max <- as.integer(max(top6$gdpPercap) * 1.02)
+y_min <- as.integer(min(top6$lifeExp) * 0.97) 
+y_max <- as.integer(max(top6$lifeExp) * 1.04)
+
+gapminder %>%
+  filter(year == 2007) %>%
+  ggplot(aes(x= gdpPercap, y = lifeExp))+
+  geom_rect(mapping = aes(xmin = x_min, xmax = x_max, ymin = y_min, ymax = y_max), alpha = 0.003, fill = 2) +
+  annotate("text", x = x_min * 1.15, y = y_min * 0.97, label = "Countries with \n highest GDP") +
+  geom_point(shape = 1, stroke = 1.5) +
+  labs(x = "GDP per capita", y = "life expectancy")
+```
+
+```{r}
+d=data.frame(x1=c(1,3,1,5,4), x2=c(2,4,3,6,6), y1=c(1,1,4,1,3), y2=c(2,2,5,3,5), t=c('a','a','a','b','b'), r=c(1,2,3,4,5))
+x_min <- 1
+x_max <- 2
+y_min <- 1
+y_max <- 2
+ggplot() + 
+  scale_x_continuous(name="x") + 
+  scale_y_continuous(name="y") +
+  geom_rect(mapping=aes(xmin=x_min, xmax=x_max, ymin=y_min, ymax=y_max), color="black", fill = "red", alpha=0.3) +
+  geom_text(data=d, aes(x=x1+(x2-x1)/2, y=y1+(y2-y1)/2, label=r), size=4)
+```
