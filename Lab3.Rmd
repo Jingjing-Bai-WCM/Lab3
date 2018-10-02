@@ -36,7 +36,8 @@ gapminder %>%
   ggplot(aes(x= gdpPercap, y = lifeExp))+
   geom_point() +
   geom_text(aes(label = ifelse(gdpPercap>40000 & continent == "Europe",as.character(country),'')),
-            vjust = 2, col = "blue") +
+            vjust = 1.5, col = "blue") +
+  theme_bw() +
   labs(x = "GDP per capita", y = "life expectancy")
 ```
 
@@ -56,9 +57,10 @@ y_max <- as.integer(max(top6$lifeExp) * 1.04)
 gapminder %>%
   filter(year == 2007) %>%
   ggplot(aes(x= gdpPercap, y = lifeExp))+
-  geom_rect(mapping = aes(xmin = x_min, xmax = x_max, ymin = y_min, ymax = y_max), alpha = 0.003, fill = 2) +
+  annotate("rect",xmin = x_min, xmax = x_max, ymin = y_min, ymax = y_max, alpha = 0.3, fill = 2) +
   annotate("text", x = x_min * 1.15, y = y_min * 0.97, label = "Countries with \n highest GDP") +
   geom_point(shape = 1, stroke = 1.5) +
+  theme_bw() +
   labs(x = "GDP per capita", y = "life expectancy")
 ```
 
